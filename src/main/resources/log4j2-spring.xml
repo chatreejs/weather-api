@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <Property name="TIMESTAMP_PATTERN">%d{yyyy-MM-dd}T%d{ABSOLUTE_MICROS}%d{Z}</Property>
+        <Property name="LOG_PATTERN">
+            ${TIMESTAMP_PATTERN} %level [%t] %C{-1}: %m%n%throwable{full}</Property>
+        <Property name="CONSOLE_PATTERN">
+            %style{${TIMESTAMP_PATTERN}}{black} %highlight{%-5level} [%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable{full}</Property>
+        <Property name="APP_LOG_ROOT">logs</Property>
+        <Property name="APP_BACKUP_DIR">${APP_LOG_ROOT}/backup</Property>
+        <Property name="APP_LOG_NAME">weather-api</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_PATTERN}" />
+        </Console>
+
+        <RollingFile name="RollingFile" fileName="${APP_LOG_ROOT}/${APP_LOG_NAME}.log"
+                     filePattern="${APP_BACKUP_DIR}/$${date:yyyyMMdd}/${APP_LOG_NAME}.%d{yyyy-MM-dd}.%i.log.gz">
+            <PatternLayout>
+                <pattern>${LOG_PATTERN}</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="nomax">
+                <Delete basePath="${APP_BACKUP_DIR}" maxDepth="2">
+                    <IfFileName glob="*/${APP_LOG_NAME}.*.log.gz">
+                        <IfAny>
+                            <IfLastModified age="P90D" />
+                        </IfAny>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <File name="CriticalFile" fileName="${APP_LOG_ROOT}/${APP_LOG_NAME}-error.log">
+            <PatternLayout>
+                <pattern>${LOG_PATTERN}</pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <!-- LOG everything at INFO level -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="CriticalFile" level="error" />
+        </Root>
+
+        <Logger name="dev.chatree" level="${env:APP_LOG_LEVEL:-trace}" />
+    </Loggers>
+</Configuration>

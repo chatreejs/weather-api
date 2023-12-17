@@ -1,0 +1,42 @@
+allow:
+  ip: '*.*.*.*'
+
+server:
+  port: '8081'
+
+spring:
+  datasource:
+    url: jdbc:${API_DB_URL}
+    username: ${API_DB_USER}
+    password: ${API_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+kafka:
+  config:
+    environment: ${KAFKA_CONFIG_ENVIRONMENT}
+    reply-timeout-seconds: 10
+  consumer:
+    bootstrap-servers: ${API_KAFKA_CONSUMER_BOOTSTRAP_SERVERS}
+    group-id-prefix: ${API_KAFKA_CONSUMER_GROUP_ID_PREFIX}
+    client-id: ${API_KAFKA_CONSUMER_CLIENT_ID}
+    client-rack: ${API_KAFKA_CONSUMER_CLIENT_RACK}
+    auto-offset-reset: earliest
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  in:
+    topics:
+      weatherstation-sensor:
+        topic: weatherstation.sensor
+        key:
+          data: data
+    key:
+      data: data
+
+cron:
+  update-weather-history: '0 0 */1 * * *'
