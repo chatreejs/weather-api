@@ -1,4 +1,4 @@
-package dev.chatree.weatherapi.config;
+package dev.chatree.weatherapi.config.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.beans.factory.annotation.Value;
