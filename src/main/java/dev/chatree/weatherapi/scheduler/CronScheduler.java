@@ -25,7 +25,7 @@ public class CronScheduler {
 
     @Scheduled(cron = "${cron.update-weather-history}")
     public void updateWeatherHistory() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         log.info("Update weather history data at {}", now);
 
         WeatherHistoryEntity weatherHistoryEntity = new WeatherHistoryEntity();
