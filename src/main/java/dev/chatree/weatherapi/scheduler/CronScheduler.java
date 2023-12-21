@@ -27,8 +27,12 @@ public class CronScheduler {
     @Scheduled(cron = "${cron.update-weather-history}")
     public void updateWeatherHistory() {
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
-        if (now.getSecond() != 0 ) {
-            now = now.minusSeconds(now.getSecond());
+        if (now.getSecond() != 0) {
+            if (now.getSecond() == 59) {
+                now = now.plusSeconds(1);
+            } else {
+                now = now.minusSeconds(now.getSecond());
+            }
         }
         log.info("Update weather history data at {}", now.format(DateTimeFormatter.ISO_DATE_TIME));
 

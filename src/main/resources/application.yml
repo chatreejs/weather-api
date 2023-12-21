@@ -39,4 +39,4 @@ kafka:
       data: data
 
 cron:
-  update-weather-history: '0 0 */30 * * *'
+  update-weather-history: '0 */30 */1 * * *'
