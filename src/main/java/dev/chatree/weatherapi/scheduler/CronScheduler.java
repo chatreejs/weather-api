@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 @Log4j2
@@ -26,12 +27,14 @@ public class CronScheduler {
     @Scheduled(cron = "${cron.update-weather-history}")
     public void updateWeatherHistory() {
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
-        log.info("Update weather history data at {}", now);
+        if (now.getSecond() != 0 ) {
+            now = now.minusSeconds(now.getSecond());
+        }
+        log.info("Update weather history data at {}", now.format(DateTimeFormatter.ISO_DATE_TIME));
 
         WeatherHistoryEntity weatherHistoryEntity = new WeatherHistoryEntity();
         weatherHistoryEntity.setDate(now.toLocalDate());
         weatherHistoryEntity.setTime(now.toLocalTime().truncatedTo(ChronoUnit.SECONDS));
-        weatherHistoryEntity.setTimestamp(now.toString());
         weatherHistoryEntity.setSource(weatherHistoryEntityCache.getSource());
         weatherHistoryEntity.setTemperature(weatherHistoryEntityCache.getTemperature());
         weatherHistoryEntity.setHumidity(weatherHistoryEntityCache.getHumidity());

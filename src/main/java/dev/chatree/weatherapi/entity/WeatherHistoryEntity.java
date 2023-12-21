@@ -20,9 +20,6 @@ public class WeatherHistoryEntity {
     @Column(name = "time")
     private LocalTime time;
 
-    @Column(name = "timestamp")
-    private String timestamp;
-
     @Column(name = "source")
     private String source;
 

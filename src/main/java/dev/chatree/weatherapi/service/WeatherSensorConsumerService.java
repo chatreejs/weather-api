@@ -66,7 +66,6 @@ public class WeatherSensorConsumerService extends AbstractConsumerSeekAware {
 
                     weatherHistoryEntityCache.setDate(offsetDateTime.toLocalDate());
                     weatherHistoryEntityCache.setTime(offsetDateTime.toLocalTime());
-                    weatherHistoryEntityCache.setTimestamp(offsetDateTime.toString());
                     weatherHistoryEntityCache.setSource(sensorUpdate.getSource().split("\\.")[0]);
 
                     if (sensorUpdate.getType().equals("temperature")) {
